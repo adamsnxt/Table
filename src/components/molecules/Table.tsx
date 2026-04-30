@@ -6,23 +6,23 @@ type Column = {
   label: string;
 };
 
-type ActionsConfig<T> =
-  | ((item: T) => ReactNode)
-  | { label: string; actions: (item: T) => ReactNode };
+type ActionsConfig =
+  | ((item: Record<string, unknown>) => ReactNode)
+  | { label: string; actions: (item: Record<string, unknown>) => ReactNode };
 
-type TableProps<T extends object> = {
+type TableProps = {
   columns: Column[];
-  items: T[];
-  renderActions?: ActionsConfig<T>;
-  onClick?: (item?: T) => void;
+  items: Record<string, unknown>[];
+  renderActions?: ActionsConfig;
+  onClick?: (item?: Record<string, unknown>) => void;
 };
 
-export const Table = <T extends object>({
+export const Table = ({
   columns,
   items,
   renderActions,
   onClick,
-}: TableProps<T>) => {
+}: TableProps) => {
   const actionsLabel =
     renderActions && typeof renderActions === "object"
       ? renderActions.label
@@ -63,9 +63,7 @@ export const Table = <T extends object>({
             >
               {columns.map((col) => (
                 <span key={col.key} className="p-4 min-w-20 max-w-52 truncate">
-                  {col.key in item
-                    ? String((item as Record<string, unknown>)[col.key])
-                    : "..."}
+                  {col.key in item ? String(item[col.key]) : "..."}
                 </span>
               ))}
               {actionsRenderer && (
