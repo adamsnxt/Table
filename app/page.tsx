@@ -1,7 +1,6 @@
 "use client";
 import { Table } from "@/src/components/molecules/";
-import { MdModeEdit } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdModeEdit } from "react-icons/md";
 
 const items = [
   { name: "John Doe", age: 30, city: "New York" },
@@ -41,27 +40,24 @@ export default function Home() {
         columns={columns}
         items={items}
         onClick={(item) => alert(JSON.stringify(item))}
-        renderActions={{
-          label: "Acciones",
-          actions: (item) => (
-            <>
-              <button
-                onClick={() => console.log(item)}
-                className="cursor-pointer"
-                title={`Editar ${item.name}`}
-              >
-                <MdModeEdit />
-              </button>
-              <button
-                onClick={() => alert(`Eliminar ${item.name}`)}
-                className="cursor-pointer"
-                title={`Eliminar ${item.name}`}
-              >
-                <MdDelete className="text-red-600" />
-              </button>
-            </>
-          ),
-        }}
+        renderActions={(item) => (
+          <>
+            <button
+              onClick={() => alert(JSON.stringify(item))}
+              className="cursor-pointer"
+              title={`Editar ${item.name}`}
+            >
+              <MdModeEdit />
+            </button>
+            <button
+              onClick={() => alert(`Eliminar ${item.name}`)}
+              className="cursor-pointer"
+              title={`Eliminar ${item.name}`}
+            >
+              <MdDelete className="text-red-600" />
+            </button>
+          </>
+        )}
       />
     </div>
   );

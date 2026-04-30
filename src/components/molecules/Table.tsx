@@ -1,5 +1,4 @@
 "use client";
-import { ReactNode } from "react";
 
 type Column = {
   key: string;
@@ -7,32 +6,37 @@ type Column = {
 };
 
 type ActionsConfig =
-  | ((item: Record<string, unknown>) => ReactNode)
-  | { label: string; actions: (item: Record<string, unknown>) => ReactNode };
+  | ((item: Record<string, unknown>) => React.ReactNode)
+  | {
+      label: string;
+      actions: (item: Record<string, unknown>) => React.ReactNode;
+    };
 
 type TableProps = {
   columns: Column[];
   items: Record<string, unknown>[];
+  onClick?: (item: Record<string, unknown>) => void;
   renderActions?: ActionsConfig;
-  onClick?: (item?: Record<string, unknown>) => void;
 };
 
 export const Table = ({
   columns,
   items,
-  renderActions,
   onClick,
+  renderActions,
 }: TableProps) => {
-  const actionsLabel =
+  const normalizeLabel =
     renderActions && typeof renderActions === "object"
       ? renderActions.label
       : "Actions";
+
   const actionsRenderer =
     renderActions && typeof renderActions === "object"
       ? renderActions.actions
       : renderActions;
 
-  const colCount = columns.length + (renderActions ? 1 : 0);
+  const colCount = renderActions ? columns.length + 1 : columns.length;
+
   const colStyle = {
     gridTemplateColumns: `repeat(${colCount}, 1fr)`,
   };
@@ -45,24 +49,24 @@ export const Table = ({
           style={colStyle}
         >
           {columns.map((col) => (
-            <span key={col.key} className="p-4 font-semibold min-w-20">
+            <span className="p-4 font-semibold min-w-20" key={col.key}>
               {col.label}
             </span>
           ))}
           {renderActions && (
-            <span className="p-4 font-semibold min-w-20">{actionsLabel}</span>
+            <span className="p-4 font-semibold min-w-20">{normalizeLabel}</span>
           )}
         </div>
         <div className="flex flex-col gap-1 overflow-y-auto normalize-scrollbar">
           {items.map((item, index) => (
             <div
-              key={index}
-              className={`bg-(--surface-off) w-full grid justify-items-center ${onClick ? "cursor-pointer hover:opacity-80" : ""} `}
+              className={`bg-(--surface-off) w-full grid justify-items-center ${onClick ? "cursor-pointer hover:opacity-80" : ""}`}
               style={colStyle}
+              key={index}
               onClick={() => onClick && onClick(item)}
             >
               {columns.map((col) => (
-                <span key={col.key} className="p-4 min-w-20 max-w-52 truncate">
+                <span className="p-4 min-w-20 max-w-52 truncate" key={col.key}>
                   {col.key in item ? String(item[col.key]) : "..."}
                 </span>
               ))}

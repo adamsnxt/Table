@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Componente Table
 
-## Getting Started
+Proyecto en [Next.js](https://nextjs.org) que contiene un componente `Table` reutilizable, construido con React y Tailwind CSS. El componente permite mostrar datos tabulares de forma dinámica, con soporte para columnas configurables, filas clickeables y acciones personalizadas por fila.
 
-First, run the development server:
+## ¿De qué va el repositorio?
+
+Este repo sirve como implementación de referencia del componente `Table`. Incluye el componente principal ubicado en `src/components/molecules/Table.tsx` y una página de demostración en `app/page.tsx` donde se puede ver el componente en acción con datos de ejemplo.
+
+## Instalación y desarrollo
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) para ver la demo.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Uso del componente `Table`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```tsx
+import { Table } from "@/src/components/molecules";
 
-## Learn More
+const columns = [
+  { key: "name", label: "Nombre" },
+  { key: "age", label: "Edad" },
+  { key: "city", label: "Ciudad" },
+];
 
-To learn more about Next.js, take a look at the following resources:
+const items = [
+  { name: "Ana García", age: 28, city: "Madrid" },
+  { name: "Luis Pérez", age: 34, city: "Barcelona" },
+];
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+<Table
+  columns={columns}
+  items={items}
+  onClick={(item) => console.log(item)}
+  renderActions={(item) => (
+    <button onClick={() => console.log("Editar", item)}>Editar</button>
+  )}
+/>;
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Props
 
-## Deploy on Vercel
+| Prop            | Tipo                                                                      | Requerido | Descripción                                                                                                                                                                                                                         |
+| --------------- | ------------------------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `columns`       | `Column[]`                                                                | ✅        | Define las columnas. Cada columna tiene `key` (campo del objeto) y `label` (encabezado visible).                                                                                                                                    |
+| `items`         | `object[]`                                                                | ✅        | Array de objetos con los datos a mostrar. Los campos que no correspondan a ninguna columna se ignoran; los que falten muestran `...`.                                                                                               |
+| `onClick`       | `(item) => void`                                                          | ❌        | Callback al hacer clic en una fila. Si se pasa, las filas se vuelven clickeables con cursor pointer.                                                                                                                                |
+| `renderActions` | `(item) => ReactNode` o `{ label: string, actions: (item) => ReactNode }` | ❌        | Renderiza una columna de acciones al final de cada fila. Se puede pasar directamente una función o un objeto con `label` personalizado y `actions`. Los clics dentro de esta columna no propagan el evento de `onClick` de la fila. |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Columna de acciones con label personalizado
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```tsx
+<Table
+  columns={columns}
+  items={items}
+  renderActions={{
+    label: "Opciones",
+    actions: (item) => <button onClick={() => eliminar(item)}>Eliminar</button>,
+  }}
+/>
+```
