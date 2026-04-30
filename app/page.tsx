@@ -26,7 +26,7 @@ const items = [
   },
 ];
 
-const columnsEJ = [
+const columns = [
   { key: "name", label: "Name" },
   { key: "age", label: "Age" },
   { key: "city", label: "City" },
@@ -38,16 +38,25 @@ export default function Home() {
   return (
     <div className="bg-background w-full min-h-screen overflow-y-auto flex items-center justify-center">
       <Table
-        columns={columnsEJ}
+        columns={columns}
         items={items}
+        onClick={(item) => alert(JSON.stringify(item))}
         renderActions={{
           label: "Acciones",
           actions: (item) => (
             <>
-              <button onClick={() => console.log(item)}>
+              <button
+                onClick={() => console.log(item)}
+                className="cursor-pointer"
+                title={`Editar ${item.name}`}
+              >
                 <MdModeEdit />
               </button>
-              <button onClick={() => alert(`Eliminar ${item.name}`)}>
+              <button
+                onClick={() => alert(`Eliminar ${item.name}`)}
+                className="cursor-pointer"
+                title={`Eliminar ${item.name}`}
+              >
                 <MdDelete className="text-red-600" />
               </button>
             </>

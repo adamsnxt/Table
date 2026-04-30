@@ -14,12 +14,14 @@ type TableProps<T extends object> = {
   columns: Column[];
   items: T[];
   renderActions?: ActionsConfig<T>;
+  onClick?: (item?: T) => void;
 };
 
 export const Table = <T extends object>({
   columns,
   items,
   renderActions,
+  onClick,
 }: TableProps<T>) => {
   const actionsLabel =
     renderActions && typeof renderActions === "object"
@@ -55,8 +57,9 @@ export const Table = <T extends object>({
           {items.map((item, index) => (
             <div
               key={index}
-              className="bg-(--surface-off) w-full grid justify-items-center"
+              className={`bg-(--surface-off) w-full grid justify-items-center ${onClick ? "cursor-pointer hover:opacity-80" : ""} `}
               style={colStyle}
+              onClick={() => onClick && onClick(item)}
             >
               {columns.map((col) => (
                 <span key={col.key} className="p-4 min-w-20 max-w-52 truncate">
@@ -66,7 +69,10 @@ export const Table = <T extends object>({
                 </span>
               ))}
               {actionsRenderer && (
-                <div className="p-4 min-w-20 flex justify-between">
+                <div
+                  className="p-4 min-w-20 flex justify-between"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {actionsRenderer(item)}
                 </div>
               )}
